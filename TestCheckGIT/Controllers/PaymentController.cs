@@ -31,7 +31,7 @@ namespace TestCheckGIT.Controllers
             try
             {
                 var cardDetails = await _paymentRepo.GetPaymentDetails();
-                if (cardDetails == null)
+                if (cardDetails.Count() == 0)
                 {
                     return NotFound();
                 }
@@ -46,10 +46,10 @@ namespace TestCheckGIT.Controllers
         }
 
         [HttpGet]
-        [Route("GetPaymentDetail")]
+        [Route("GetPaymentDetail/{id?}")]
         public async Task<IActionResult> GetPaymentDetail(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return BadRequest();
             }
@@ -102,6 +102,11 @@ namespace TestCheckGIT.Controllers
         [Route("UpdatePaymentDetails")]
         public async Task<IActionResult> UpdatePaymentDetails(PaymentDetails paymentDetails)
         {
+            if (paymentDetails.PMID==null|| paymentDetails.PMID==0)
+            {
+                return BadRequest();
+            }
+            
             if (ModelState.IsValid)
             {
                 try
@@ -111,7 +116,7 @@ namespace TestCheckGIT.Controllers
                 }
                 catch (Exception ex)
                 {
-
+  
                     if (ex.GetType().FullName == "Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException")
                     {
                         return NotFound();
@@ -122,5 +127,31 @@ namespace TestCheckGIT.Controllers
             }
             return BadRequest();
         }
+
+        [HttpDelete]
+        [Route("DeleteDetails/{id}")]
+        public async Task<IActionResult> DeleteDetails(int? id)
+        {
+            int result = 0;
+            if (id == null ||id==0)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                 result =await _paymentRepo.DeleteDetails(id);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+        }
+     
     }
 }

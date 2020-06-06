@@ -13,5 +13,6 @@ namespace TestCheckGIT.Data
         public Task<PaymentDetails> GetPaymentDetail(int id);
         public Task<int> PostPaymentDetails(PaymentDetails paymentDetails);
         public Task UpdatePaymentDetails(PaymentDetails paymentDetails);
+        public Task<int> DeleteDetails(int? id);
     }
 }
